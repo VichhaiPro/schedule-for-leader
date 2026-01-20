@@ -186,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <div class="footer">
                         <p>-----------------------------------</p>
-                        <p>អរគុណសម្រាប់ការជ្រើសរើសពួកយើង!</p>
+                        <p>អរគុណ!</p>
                     </div>
                     <!-- Removed JPG button -->
                 </div>
