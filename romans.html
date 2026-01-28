@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+<meta charset="UTF-8">
+<title>Romans Study 2026</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<!-- Menu Bar -->
+<?php include 'header.html'; ?>
+
+<section style="max-width:950px;margin:40px auto;padding:30px;background:#fff;border-radius:12px;font-family:'Segoe UI',Arial,sans-serif;box-shadow:0 10px 25px rgba(0,0,0,0.08);">
+<h2 style="text-align:center;color:#6a1b9a;">📖 Romans Study – Khmer & English</h2>
+<p style="text-align:center;color:#777;margin-bottom:25px;">ចូរ​ជ្រើស​ភាសា​ភាសាខ្មែរ ឬ​អង់គ្លេស</p>
+
+<!-- Toggle Buttons -->
+<div style="text-align:center;margin-bottom:20px;">
+  <button onclick="showLang('kh')" style="padding:10px 22px;border-radius:20px;border:none;background:#6a1b9a;color:#fff;font-size:15px;cursor:pointer;margin-right:10px;">ភាសាខ្មែរ</button>
+  <button onclick="showLang('en')" style="padding:10px 22px;border-radius:20px;border:1px solid #6a1b9a;background:#f3e8fd;color:#6a1b9a;font-size:15px;cursor:pointer;">English (KJV)</button>
+</div>
+
+<!-- Bible Chapters -->
+<div id="kh-bible" style="display:block;">
+  <!-- Khmer Bible chapters 4–16 -->
+  <iframe src="https://www.bible.com/bible/1270/ROM.4.%25E1%259E%2596%25E1%259E%2582%25E1%259E%2594" width="100%" height="600" style="border:1px solid #ddd;border-radius:8px;" loading="lazy"></iframe>
+</div>
+
+<div id="en-bible" style="display:none;">
+  <iframe src="https://www.biblegateway.com/passage/?search=Romans+4-16&version=KJV" width="100%" height="600" style="border:1px solid #ddd;border-radius:8px;" loading="lazy"></iframe>
+</div>
+</section>
+
+<script>
+function showLang(lang){
+  document.getElementById("kh-bible").style.display = "none";
+  document.getElementById("en-bible").style.display = "none";
+  if(lang==='kh'){document.getElementById("kh-bible").style.display="block";}
+  else{document.getElementById("en-bible").style.display="block";}
+}
+window.addEventListener('DOMContentLoaded',()=>{showLang('kh');});
+</script>
+</body>
+</html>

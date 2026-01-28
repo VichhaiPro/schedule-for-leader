@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+<meta charset="UTF-8">
+<title>Meeting Notes & Prayer Board</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<?php include 'header.html'; ?>
+
+<section style="max-width:900px;margin:40px auto;">
+<h2>🙏📝 Meeting Notes & Prayer Board</h2>
+
+<!-- Date & Leader -->
+<div style="margin-bottom:15px;">
+  <label><strong>Date:</strong></label>
+  <input type="date" id="meetingDate" onchange="saveMeta()">
+  <label style="margin-left:15px;"><strong>Leader:</strong></label>
+  <select id="meetingLeader" onchange="saveMeta()">
+    <option value="">Select leader</option>
+    <option value="Lai">Lai</option>
+    <option value="Bonthoeurn">Bonthoeurn</option>
+    <option value="David">David</option>
+    <option value="Vichhai">Vichhai</option>
+  </select>
+</div>
+
+<!-- Tabs -->
+<div style="margin-bottom:10px;">
+  <button onclick="showTab('prayer')">🙏 Prayer Requests</button>
+  <button onclick="showTab('notes')">📝 Meeting Notes</button>
+  <button onclick="printMeeting()">🖨️ Print / PDF</button>
+</div>
+
+<div id="prayerTab">
+<textarea id="prayerNote" placeholder="• Prayer request\n• Family\n• Health\n• Ministry..." style="width:100%; min-height:160px; padding:2px;" oninput="savePrayer()"></textarea>
+<button onclick="clearPrayer()" style="margin-top:8px;">🗑️ Clear Prayer</button>
+</div>
+
+<div id="notesTab" style="display:none;">
+<textarea id="meetingNote" placeholder="• Key sharing point\n• Teaching highlight\n• Action steps..." style="width:100%; min-height:200px; padding:2px;" oninput="saveMeetingNote()"></textarea>
+<button onclick="clearMeetingNote()" style="margin-top:8px;">🗑️ Clear Notes</button>
+</div>
+
+</section>
+
+<script>
+function saveMeta(){
+  localStorage.setItem("meetingDate", meetingDate.value);
+  localStorage.setItem("meetingLeader", meetingLeader.value);
+}
+function savePrayer(){localStorage.setItem("prayerNote", prayerNote.value);}
+function saveMeetingNote(){localStorage.setItem("meetingNote", meetingNote.value);}
+function loadAll(){
+  meetingDate.value = localStorage.getItem("meetingDate") || "";
+  meetingLeader.value = localStorage.getItem("meetingLeader") || "";
+  prayerNote.value = localStorage.getItem("prayerNote") || "";
+  meetingNote.value = localStorage.getItem("meetingNote") || "";
+}
+function clearPrayer(){if(!confirm("Clear prayer requests?")) return; prayerNote.value=""; localStorage.removeItem("prayerNote");}
+function clearMeetingNote(){if(!confirm("Clear meeting notes?")) return; meetingNote.value=""; localStorage.removeItem("meetingNote");}
+function showTab(tab){
+  prayerTab.style.display = tab==="prayer"?"block":"none";
+  notesTab.style.display = tab==="notes"?"block":"none";
+}
+function printMeeting(){
+  const content = `<h2>Small Group Meeting Notes</h2><p><strong>Date:</strong> ${meetingDate.value}</p><p><strong>Leader:</strong> ${meetingLeader.value}</p><hr><h3>🙏 Prayer Requests</h3><p>${prayerNote.value.replace(/\n/g,"<br>")}</p><hr><h3>📝 Meeting Notes</h3><p>${meetingNote.value.replace(/\n/g,"<br>")}</p>`;
+  const win = window.open("","", "width=900,height=700");
+  win.document.write(`<html><head><title>Meeting Notes</title><style>body{font-family:Arial;padding:20px;}</style></head><body>${content}</body></html>`);
+  win.document.close(); win.print();
+}
+window.onload = loadAll;
+</script>
+</body>
+</html>
