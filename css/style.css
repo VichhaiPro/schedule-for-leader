@@ -1,0 +1,47 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 30px;
+    background: #f9f9f9;
+  }
+  
+  h1 { color: #2E5D9F; }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: #fff;
+  }
+  
+  table, th, td { border: 1px solid #ccc; }
+  
+  th, td {
+    padding: 10px;
+    text-align: center;
+  }
+  
+  th { background: #2E5D9F; color: #fff; }
+  
+  .note {
+    margin-top: 20px;
+    background: #eef3ff;
+    padding: 10px;
+    border-left: 4px solid #2E5D9F;
+  }
+  
+  /* Print-friendly (A4) */
+  @media print {
+    body { background: #fff; margin: 10mm; }
+    h1 { font-size: 18pt; }
+    table { font-size: 10pt; }
+    .note { page-break-inside: avoid; }
+  }
+body { font-family:'Segoe UI', Arial, sans-serif; margin:0; padding:0; background:#f2f2f7; color:#333; }
+  section { max-width:950px; margin:40px auto; padding:30px; background:#fff; border-radius:12px; box-shadow:0 10px 25px rgba(0,0,0,0.08); }
+  h2 { color:#6a1b9a; text-align:center; margin-bottom:15px; }
+  p { line-height:1.7; color:#555; }
+  ul { margin-left:20px; line-height:1.7; }
+  button { cursor:pointer; border-radius:20px; padding:10px 22px; margin:5px; font-size:15px; }
+  .btn-primary { background:#6a1b9a; color:#fff; border:none; }
+  .btn-outline { background:#f3e8fd; color:#6a1b9a; border:1px solid #6a1b9a; }
+  input[type=checkbox] { margin-right:10px; transform:scale(1.2); }
