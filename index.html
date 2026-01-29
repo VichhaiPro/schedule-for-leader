@@ -143,50 +143,69 @@ setInterval(showVerse, 8000); // ប្ដូរ រៀងរាល់ 8 វិ�
 
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc } 
-from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, doc, setDoc, getDoc } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCd-FGrbCelEUN370I0wmzscnLjYxxX200",
   authDomain: "bible-group-2026.firebaseapp.com",
   projectId: "bible-group-2026",
-  storageBucket: "bible-group-2026.firebasestorage.app",
-  messagingSenderId: "639986298395",
-  appId: "1:639986298395:web:d9d92344e516c4f5e112be"
+  
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const memberList = document.getElementById("memberList");
+const members = [
+  "Khoem Toeurn",
+  "Vichhai Samrith",
+  "Bonthoeurn Daniel",
+  "David Pean",
+  "Doeun Lai"
+];
 
-// 🔄 Load members realtime
-onSnapshot(collection(db, "members"), (snapshot) => {
-  memberList.innerHTML = "";
-  snapshot.forEach((docu) => {
-    memberList.innerHTML += `
-      <li>
-        ${docu.data().name}
-        <button onclick="deleteMember('${docu.id}')">❌</button>
-      </li>
-    `;
-  });
+const btnBox = document.getElementById("memberButtons");
+const prayerSection = document.getElementById("prayerSection");
+const memberTitle = document.getElementById("memberTitle");
+const textareas = document.querySelectorAll(".pray");
+
+let currentMember = "";
+
+// create member buttons
+members.forEach(name=>{
+  const btn = document.createElement("button");
+  btn.textContent = name;
+  btn.onclick = ()=>loadPrayer(name);
+  btnBox.appendChild(btn);
 });
 
-// ➕ Add member
-window.addMember = async () => {
-  const name = document.getElementById("memberName").value;
-  if (!name) return alert("សូមបញ្ចូលឈ្មោះ");
-  await addDoc(collection(db, "members"), { name });
-  document.getElementById("memberName").value = "";
-};
+async function loadPrayer(name){
+  currentMember = name;
+  memberTitle.innerText = "🙏 Prayer for " + name;
+  prayerSection.style.display = "block";
 
-// ❌ Delete member
-window.deleteMember = async (id) => {
-  await deleteDoc(doc(db, "members", id));
+  const ref = doc(db,"prayers",name);
+  const snap = await getDoc(ref);
+
+  textareas.forEach((t,i)=>{
+    t.value = snap.exists() ? snap.data()["p"+(i+1)] || "" : "";
+  });
+}
+
+window.savePrayer = async ()=>{
+  if(!currentMember) return;
+
+  const data = {};
+  textareas.forEach((t,i)=>{
+    data["p"+(i+1)] = t.value;
+  });
+
+  await setDoc(doc(db,"prayers",currentMember), data);
+  alert("Prayer Saved 🙏");
 };
 </script>
+
 
 
 
