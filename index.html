@@ -157,6 +157,7 @@ setInterval(showVerse, 8000); // ប្ដូរ រៀងរាល់ 8 វិ�
     <tbody id="memberTable"></tbody>
   </table>
 </section>
+  
 <div id="memberModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5)">
   <div style="background:white;padding:20px;border-radius:10px;max-width:400px;margin:100px auto;">
     <h3>Add Team Member</h3>
@@ -170,6 +171,52 @@ setInterval(showVerse, 8000); // ប្ដូរ រៀងរាល់ 8 វិ�
     <button onclick="closeModal()">Cancel</button>
   </div>
 </div>
+
+<script type="module">
+import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc } 
+from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+const db = getFirestore();
+
+const table = document.getElementById("memberTable");
+
+onSnapshot(collection(db,"members"), snap=>{
+  table.innerHTML="";
+  let i=1;
+  snap.forEach(d=>{
+    const m=d.data();
+    table.innerHTML+=`
+      <tr>
+        <td>${i++}</td>
+        <td>${m.name}</td>
+        <td>${m.role}</td>
+        <td>
+          <button onclick="deleteMember('${d.id}')">❌</button>
+        </td>
+      </tr>`;
+  });
+});
+
+window.saveMember = async()=>{
+  const name=memberName.value.trim();
+  if(!name) return alert("Enter name");
+  await addDoc(collection(db,"members"),{
+    name,
+    role:memberRole.value
+  });
+  closeModal();
+};
+
+window.deleteMember = async(id)=>{
+  if(confirm("Delete member?"))
+    await deleteDoc(doc(db,"members",id));
+};
+
+window.showAddMember=()=>memberModal.style.display="block";
+window.closeModal=()=>memberModal.style.display="none";
+</script>
+
+
 
 
 
