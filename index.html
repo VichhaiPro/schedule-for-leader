@@ -131,6 +131,16 @@ setInterval(showVerse, 8000); // ប្ដូរ រៀងរាល់ 8 វិ�
 ">
 </div>
 
+<section id="team" style="max-width:900px;margin:40px auto;padding:30px;">
+  <h2>👥 សមាជិកក្រុម Small Group</h2>
+
+  <ul id="memberList"></ul>
+
+  <input type="text" id="memberName" placeholder="បញ្ចូលឈ្មោះសមាជិក">
+  <button onclick="addMember()">➕ បន្ថែមសមាជិក</button>
+</section>
+
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc } 
