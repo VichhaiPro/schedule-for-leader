@@ -184,7 +184,7 @@ setInterval(showVerse, 8000); // ប្ដូរ រៀងរាល់ 8 វិ�
   <button onclick="addMember()">➕ បន្ថែមសមាជិក</button>
 </section>
 
-<!--
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc } 
@@ -246,60 +246,9 @@ members.forEach(name=>{
   btnBox.appendChild(card);
 });
 
-</script>-->
-
-<!--New script-->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc } 
-from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyCd-FGrbCelEUN370I0wmzscnLjYxxX200",
-  authDomain: "bible-group-2026.firebaseapp.com",
-  projectId: "bible-group-2026",
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-const memberList = document.getElementById("memberList");
-
-onSnapshot(collection(db,"members"), snap=>{
-  table.innerHTML="";
-  let i=1;
-  snap.forEach(d=>{
-    const m=d.data();
-    table.innerHTML+=`
-      <tr>
-        <td>${i++}</td>
-        <td>${m.name}</td>
-        <td>${m.role}</td>
-        <td>
-          <button onclick="deleteMember('${d.id}')">❌</button>
-        </td>
-      </tr>`;
-  });
-});
-
-window.saveMember = async()=>{
-  const name=memberName.value.trim();
-  if(!name) return alert("Enter name");
-  await addDoc(collection(db,"members"),{
-    name,
-    role:memberRole.value
-  });
-  closeModal();
-};
-
-window.deleteMember = async(id)=>{
-  if(confirm("Delete member?"))
-    await deleteDoc(doc(db,"members",id));
-};
-
-window.showAddMember=()=>memberModal.style.display="block";
-window.closeModal=()=>memberModal.style.display="none";
 </script>
+
+
 
 
 
