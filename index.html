@@ -151,12 +151,32 @@ setInterval(showVerse, 8000); // ប្ដូរ រៀងរាល់ 8 វិ�
         <th>#</th>
         <th>Name</th>
         <th>Role</th>
+        <th>Prayer</th>
         <th>Action</th>
       </tr>
     </thead>
     <tbody id="memberTable"></tbody>
   </table>
 </section>
+
+<div id="prayerModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5)">
+  <div style="background:white;padding:20px;border-radius:10px;max-width:500px;margin:80px auto;">
+    <h3 id="prayerTitle">🙏 Prayer Requests</h3>
+
+    <textarea id="prayer1" placeholder="Prayer 1"></textarea>
+    <textarea id="prayer2" placeholder="Prayer 2"></textarea>
+    <textarea id="prayer3" placeholder="Prayer 3"></textarea>
+    <textarea id="prayer4" placeholder="Prayer 4"></textarea>
+    <textarea id="prayer5" placeholder="Prayer 5"></textarea>
+    <textarea id="prayer6" placeholder="Prayer 6"></textarea>
+    <textarea id="prayer7" placeholder="Prayer 7"></textarea>
+
+    <br>
+    <button onclick="savePrayer()" style="background:#6a1b9a;color:#fff;padding:8px 14px;border:none;border-radius:6px;">💾 Save</button>
+    <button onclick="closePrayer()">Close</button>
+  </div>
+</div>
+
   
 <div id="memberModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5)">
   <div style="background:white;padding:20px;border-radius:10px;max-width:400px;margin:100px auto;">
@@ -172,6 +192,7 @@ setInterval(showVerse, 8000); // ប្ដូរ រៀងរាល់ 8 វិ�
   </div>
 </div>
 
+<!--
 <script type="module">
 import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc } 
 from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
@@ -214,8 +235,57 @@ window.deleteMember = async(id)=>{
 
 window.showAddMember=()=>memberModal.style.display="block";
 window.closeModal=()=>memberModal.style.display="none";
-</script>
+</script> -->
 
+<script type="module">
+import {
+  getFirestore, collection, addDoc, onSnapshot,
+  doc, updateDoc, getDoc
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+const db = getFirestore();
+let currentMemberId = "";
+
+// Load members
+onSnapshot(collection(db,"members"), snap=>{
+  memberTable.innerHTML="";
+  let i=1;
+  snap.forEach(d=>{
+    const m=d.data();
+    memberTable.innerHTML+=`
+      <tr>
+        <td>${i++}</td>
+        <td>${m.name}</td>
+        <td>${m.role}</td>
+        <td><button onclick="openPrayer('${d.id}','${m.name}')">🙏 Open</button></td>
+        <td><button onclick="deleteMember('${d.id}')">❌</button></td>
+      </tr>`;
+  });
+});
+
+window.openPrayer = async(id,name)=>{
+  currentMemberId=id;
+  prayerTitle.innerText=`🙏 Prayer Requests – ${name}`;
+  const ref=doc(db,"members",id);
+  const snap=await getDoc(ref);
+  const p=snap.data().prayers || [];
+  [prayer1,prayer2,prayer3,prayer4,prayer5,prayer6,prayer7].forEach(
+    (t,i)=>t.value=p[i]||""
+  );
+  prayerModal.style.display="block";
+};
+
+window.savePrayer = async()=>{
+  const prayers=[
+    prayer1.value,prayer2.value,prayer3.value,
+    prayer4.value,prayer5.value,prayer6.value,prayer7.value
+  ];
+  await updateDoc(doc(db,"members",currentMemberId),{prayers});
+  alert("Prayer saved online 🙏");
+};
+
+window.closePrayer=()=>prayerModal.style.display="none";
+</script>
 
 
 
