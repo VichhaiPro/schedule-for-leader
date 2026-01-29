@@ -137,6 +137,8 @@ setInterval(showVerse, 8000); // ប្ដូរ រៀងរាល់ 8 វិ�
   <ul id="memberList"></ul>
 
   <input type="text" id="memberName" placeholder="បញ្ចូលឈ្មោះសមាជិក">
+  <div id="memberButtons" class="member-grid"></div>
+
   <button onclick="addMember()">➕ បន្ថែមសមាជិក</button>
 </section>
 
@@ -184,6 +186,24 @@ window.deleteMember = async (id) => {
 };
 </script>
 
+members.forEach(name=>{
+  const card = document.createElement("div");
+  card.className = "member-card";
+
+  card.innerHTML = `
+    <div class="member-icon">🙏</div>
+    <h3>${name}</h3>
+    <span>Prayer Requests</span>
+  `;
+
+  card.onclick = ()=>{
+    document.querySelectorAll(".member-card").forEach(c=>c.classList.remove("active"));
+    card.classList.add("active");
+    loadPrayer(name);
+  };
+
+  btnBox.appendChild(card);
+});
 
 
 
