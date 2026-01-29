@@ -131,70 +131,63 @@ setInterval(showVerse, 8000); // ប្ដូរ រៀងរាល់ 8 វិ�
 ">
 </div>
 
-<section id="members" style="margin-top:50px;">
-  <h2 style="text-align:center;color:#6a1b9a;">👥 Group Members</h2>
+<section id="team" style="max-width:900px;margin:40px auto;padding:30px;">
+  <h2>👥 សមាជិកក្រុម Small Group</h2>
 
-  <!-- Member List -->
-  <ul id="memberList" style="max-width:400px;margin:20px auto;padding:0;"></ul>
+  <ul id="memberList"></ul>
 
-  <!-- Add Member -->
-  <div style="text-align:center;margin-top:20px;">
-    <input type="text" id="newMember" placeholder="Enter member name"
-      style="padding:10px;width:220px;border-radius:8px;border:1px solid #ccc;">
-    <br><br>
-    <button onclick="addMember()"
-      style="padding:10px 18px;border:none;border-radius:8px;
-      background:#6a1b9a;color:#fff;cursor:pointer;">
-      ➕ Add Member
-    </button>
-  </div>
+  <input type="text" id="memberName" placeholder="បញ្ចូលឈ្មោះសមាជិក">
+  <button onclick="addMember()">➕ បន្ថែមសមាជិក</button>
 </section>
 
 
-<script>
-  const memberList = document.getElementById("memberList");
 
-  function renderMembers() {
-    memberList.innerHTML = "";
-    db.collection("members").get().then(snapshot => {
-      snapshot.forEach(doc => {
-        const li = document.createElement("li");
-        li.style = `
-          list-style:none;
-          background:#f3e5f5;
-          margin:8px 0;
-          padding:10px;
-          border-radius:10px;
-          display:flex;
-          justify-content:space-between;`;
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc } 
+from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
 
-        li.innerHTML = `
-          ${doc.data().name}
-          <button onclick="removeMember('${doc.id}')"
-            style="background:red;color:white;border:none;
-            border-radius:6px;padding:4px 8px;">✖</button>
-        `;
-        memberList.appendChild(li);
-      });
-    });
-  }
+const firebaseConfig = {
+  apiKey: "AIzaSyCd-FGrbCelEUN370I0wmzscnLjYxxX200",
+  authDomain: "bible-group-2026.firebaseapp.com",
+  projectId: "bible-group-2026",
+  storageBucket: "bible-group-2026.firebasestorage.app",
+  messagingSenderId: "639986298395",
+  appId: "1:639986298395:web:d9d92344e516c4f5e112be"
+};
 
-  function addMember() {
-    const name = document.getElementById("newMember").value.trim();
-    if (name !== "") {
-      db.collection("members").add({ name: name });
-      document.getElementById("newMember").value = "";
-      setTimeout(renderMembers, 300);
-    }
-  }
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-  function removeMember(id) {
-    db.collection("members").doc(id).delete();
-    setTimeout(renderMembers, 300);
-  }
+const memberList = document.getElementById("memberList");
 
-  renderMembers();
+// 🔄 Load members realtime
+onSnapshot(collection(db, "members"), (snapshot) => {
+  memberList.innerHTML = "";
+  snapshot.forEach((docu) => {
+    memberList.innerHTML += `
+      <li>
+        ${docu.data().name}
+        <button onclick="deleteMember('${docu.id}')">❌</button>
+      </li>
+    `;
+  });
+});
+
+// ➕ Add member
+window.addMember = async () => {
+  const name = document.getElementById("memberName").value;
+  if (!name) return alert("សូមបញ្ចូលឈ្មោះ");
+  await addDoc(collection(db, "members"), { name });
+  document.getElementById("memberName").value = "";
+};
+
+// ❌ Delete member
+window.deleteMember = async (id) => {
+  await deleteDoc(doc(db, "members", id));
+};
 </script>
+
 
 
 
