@@ -184,7 +184,7 @@ setInterval(showVerse, 8000); // ប្ដូរ រៀងរាល់ 8 វិ�
   <button onclick="addMember()">➕ បន្ថែមសមាជិក</button>
 </section>
 
-
+<!--
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc } 
@@ -246,16 +246,24 @@ members.forEach(name=>{
   btnBox.appendChild(card);
 });
 
-</script>
+</script>-->
 
-<!--New script
+<!--New script-->
 <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc } 
-from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const db = getFirestore();
+const firebaseConfig = {
+  apiKey: "AIzaSyCd-FGrbCelEUN370I0wmzscnLjYxxX200",
+  authDomain: "bible-group-2026.firebaseapp.com",
+  projectId: "bible-group-2026",
+};
 
-const table = document.getElementById("memberTable");
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const memberList = document.getElementById("memberList");
 
 onSnapshot(collection(db,"members"), snap=>{
   table.innerHTML="";
@@ -291,7 +299,7 @@ window.deleteMember = async(id)=>{
 
 window.showAddMember=()=>memberModal.style.display="block";
 window.closeModal=()=>memberModal.style.display="none";
-</script>-->
+</script>
 
 
 
