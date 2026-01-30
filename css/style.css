@@ -98,4 +98,10 @@ body { font-family:'Segoe UI', Arial, sans-serif; margin:0; padding:0; backgroun
   font-size:26px;
   margin:0 auto 12px;
 }
+@media (max-width:768px){
+  textarea { font-size:16px; }
+  table { font-size:14px; }
+  button { width:100%; margin:6px 0; }
+}
+
 
