@@ -2,20 +2,6 @@
 <html lang="km">
 <head>
 
-<script>
-const members = [
-  "Khoem Toeurn",
-  "Vichhai Samrith",
-  "Bonthoeurn Daniel",
-  "David Pean",
-  "Doeun Lai"
-];
-
-members.forEach(name => {
-  db.collection("members").add({ name: name });
-});
-</script>
-
 
 <script type="module">
   // Import the functions you need from the SDKs you need
@@ -307,7 +293,7 @@ window.closePrayer=()=>prayerModal.style.display="none";
   <button onclick="addMember()">➕ បន្ថែមសមាជិក</button>
 </section>-->
 
-<!--<script type="module">
+<script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc } 
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -368,7 +354,7 @@ members.forEach(name=>{
   btnBox.appendChild(card);
 });
 
-</script>-->
+</script>
 
 
 
