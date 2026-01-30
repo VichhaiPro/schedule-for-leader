@@ -283,10 +283,10 @@ window.savePrayer = async()=>{
   ];
   await updateDoc(doc(db,"members",currentMemberId),{prayers});
   alert("Prayer saved online 🙏");
-  window.savePrayer =close()
+  window.closePrayer=()=>prayerModal.style.display="none";
 };
 
-window.closePrayer=()=>prayerModal.style.display="none";
+
 </script>
 
 
