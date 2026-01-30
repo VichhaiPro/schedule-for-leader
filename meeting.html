@@ -189,6 +189,10 @@ function printMeeting(){
   win.document.write(`<html><head><title>Meeting Notes</title></head><body>${content}</body></html>`);
   win.print();
 }
+
+  const date = new URLSearchParams(window.location.search).get("date");
+loadPrayerByDate(date);
+
 </script>
 
 </body>
