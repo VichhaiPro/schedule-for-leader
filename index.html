@@ -172,7 +172,7 @@ setInterval(showVerse, 8000); // ប្ដូរ រៀងរាល់ 8 វិ�
     <textarea id="prayer7" placeholder="Prayer 7"></textarea>
 
     <br>
-    <button onclick="savePrayer()" onclick="closePrayer()" style="background:#6a1b9a;color:#fff;padding:8px 14px;border:none;border-radius:6px;">💾 Save</button>
+    <button onclick="savePrayer()" style="background:#6a1b9a;color:#fff;padding:8px 14px;border:none;border-radius:6px;">💾 Save</button>
     <!--<button onclick="closePrayer()">Close</button>-->
     
   </div>
@@ -283,6 +283,7 @@ window.savePrayer = async()=>{
   ];
   await updateDoc(doc(db,"members",currentMemberId),{prayers});
   alert("Prayer saved online 🙏");
+  window.savePrayer =close()
 };
 
 window.closePrayer=()=>prayerModal.style.display="none";
