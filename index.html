@@ -213,7 +213,6 @@ window.saveMember = async()=>{
   await addDoc(collection(db,"members"),{
     name,
     role:memberRole.value
-    closeModal();
   });
   closeModal();
 };
@@ -225,7 +224,8 @@ window.deleteMember = async(id)=>{
 
 window.showAddMember=()=>memberModal.style.display="block";
 window.closeModal=()=>memberModal.style.display="none";
-</script> 
+</script>
+
 
 <script type="module">
 import {
