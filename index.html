@@ -173,7 +173,7 @@ setInterval(showVerse, 8000); // ប្ដូរ រៀងរាល់ 8 វិ�
 
     <br>
     <button onclick="savePrayer()" style="background:#6a1b9a;color:#fff;padding:8px 14px;border:none;border-radius:6px;">💾 Save</button>
-    <!--<button onclick="closePrayer()">Close</button>-->
+    <button onclick="closePrayer()">Close</button>
     
   </div>
 </div>
@@ -282,7 +282,8 @@ window.savePrayer = async()=>{
     prayer1.value,prayer2.value,prayer3.value,
     prayer4.value,prayer5.value,prayer6.value,prayer7.value
   ];
-   
+  await updateDoc(doc(db,"members",currentMemberId),{prayers});
+   alert("Prayer saved online 🙏");
   
   
 };
@@ -296,8 +297,7 @@ window.closePrayer=()=>prayerModal.style.display="none";
 <!--
 <section id="team" style="max-width:900px;margin:40px auto;padding:30px;">
   <h2>👥 សមាជិកក្រុមតូច​ អ្នករៀនចប់</h2>
-await updateDoc(doc(db,"members",currentMemberId),{prayers});
-   alert("Prayer saved online 🙏");
+
   <ul id="memberList"></ul>
 
   <input type="text" id="memberName" placeholder="បញ្ចូលឈ្មោះសមាជិក">
