@@ -196,45 +196,7 @@ loadPrayerByDate(date);
 
 
 
-/* LOAD WHEN DATE CHANGE */
-function loadByDate(){
-  if(!meetingDate.value) return;
 
-  if(unsubscribe) unsubscribe(); // stop old listener
-
-  const ref = doc(db,"meetings",getDocId());
-
-  unsubscribe = onSnapshot(ref,(snap)=>{
-    if(snap.exists()){
-      const d = snap.data();
-      meetingLeader.value = d.leader || "";
-      prayerNote.value = d.prayer || "";
-      meetingNote.value = d.notes || "";
-    }else{
-      meetingLeader.value="";
-      prayerNote.value="";
-      meetingNote.value="";
-    }
-  });
-}
-
-/* EVENTS */
-meetingDate.addEventListener("change", loadByDate);
-meetingLeader.addEventListener("change", saveAll);
-prayerNote.addEventListener("input", saveAll);
-meetingNote.addEventListener("input", saveAll);
-
-async function saveAll(){
-  if(!meetingDate.value) return;
-
-  await setDoc(doc(db,"meetings",getDocId()),{
-    date: meetingDate.value,
-    leader: meetingLeader.value,
-    prayer: prayerNote.value,
-    notes: meetingNote.value,
-    updatedAt: new Date()
-  });
-}
 
 </script>
 
