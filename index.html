@@ -277,14 +277,33 @@ window.saveMember = async()=>{
   const name = memberName.value.trim();
   if(!name) return alert("Enter name");
 
+  // 🔍 check duplicate name
+  const snap = await getDocs(collection(db,"members"));
+  let duplicate = false;
+
+  snap.forEach(d=>{
+    const m = d.data();
+    if(
+      m.name.toLowerCase() === name.toLowerCase() &&
+      d.id !== currentMemberId   // allow same when editing itself
+    ){
+      duplicate = true;
+    }
+  });
+
+  if(duplicate){
+    alert("❌ This name already exists");
+    return;
+  }
+
   if(editMode){
+    // ✏️ Update member
     await updateDoc(doc(db,"members",currentMemberId),{
       name,
       role: memberRole.value
     });
   }else{
-    // get max order
-    const snap = await getDocs(collection(db,"members"));
+    // ➕ Add new member (to bottom)
     let maxOrder = 0;
     snap.forEach(d=>{
       maxOrder = Math.max(maxOrder, d.data().order || 0);
@@ -301,6 +320,7 @@ window.saveMember = async()=>{
 
   closeModal();
 };
+
 
 // ✏️ Edit member
 window.editMember = (id,name,role)=>{
