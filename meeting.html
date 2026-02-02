@@ -224,6 +224,18 @@ meetingLeader.addEventListener("change", saveAll);
 prayerNote.addEventListener("input", saveAll);
 meetingNote.addEventListener("input", saveAll);
 
+async function saveAll(){
+  if(!meetingDate.value) return;
+
+  await setDoc(doc(db,"meetings",getDocId()),{
+    date: meetingDate.value,
+    leader: meetingLeader.value,
+    prayer: prayerNote.value,
+    notes: meetingNote.value,
+    updatedAt: new Date()
+  });
+}
+
 </script>
 
 
