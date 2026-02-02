@@ -1,105 +1,46 @@
 <!DOCTYPE html>
 <html lang="km">
 <head>
-  <header style="background:#6a1b9a;color:#fff;padding:15px 30px;border-radius:8px;">
-    <nav style="max-width:1000px;margin:auto;display:flex;justify-content:space-between;align-items:center;">
-      <div style="font-weight:bold;font-size:18px;">Romans Small Group 2026</div>
-      <div>
-        <a href="index.html" style="color:#fff;text-decoration:none;margin:0 10px;">🏠 Home</a>
-        <a href="calendar.html" style="color:#fff;text-decoration:none;margin:0 10px;">📅 Calendar</a>
-        <a href="romans.html" style="color:#fff;text-decoration:none;margin:0 10px;">📖 Romans Study</a>
-        <a href="meeting.html" style="color:#fff;text-decoration:none;margin:0 10px;">🙏 Meeting Notes</a>
-        <a href="progress.html" style="color:#fff;text-decoration:none;margin:0 10px;">✅ Weekly Progress</a>
-      </div>
-    </nav>
-  </header>
-  
 <meta charset="UTF-8">
 <title>Meeting Notes & Prayer Board</title>
+<link rel="stylesheet" href="css/style.css">
 
-<!-- Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-import { getFirestore, doc, setDoc, onSnapshot } 
-from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
 
+/* 🔥 Firebase Config */
 const firebaseConfig = {
   apiKey: "AIzaSyCd-FGrbCelEUN370I0wmzscnLjYxxX200",
   authDomain: "bible-group-2026.firebaseapp.com",
   projectId: "bible-group-2026",
-  storageBucket: "bible-group-2026.appspot.com",
+  storageBucket: "bible-group-2026.firebasestorage.app",
   messagingSenderId: "639986298395",
   appId: "1:639986298395:web:d9d92344e516c4f5e112be"
 };
 
+/* Init */
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// expose globally
-window.db = db;
-window.doc = doc;
-window.setDoc = setDoc;
-window.onSnapshot = onSnapshot;
-</script>
-
-<style>
-body{font-family:Arial;background:#f5f5f5}
-textarea{width:100%;min-height:400px;padding:10px}
-button{padding:6px 12px;margin-right:5px}
-</style>
-</head>
-
-<body>
-
-<h2>🙏📝 Meeting Notes & Prayer Board</h2>
-
-<!-- Date & Leader -->
-<div>
-  <label><b>Date:</b></label>
-  <input type="date" id="meetingDate">
-
-  <label style="margin-left:10px;"><b>Leader:</b></label>
-  <select id="meetingLeader">
-    <option value="">Select leader</option>
-    <option>Khoem Toeurn</option>
-    <option>Vichhai Samrith</option>
-    <option>Bonthoeurn Daniel</option>
-    <option>David Pean</option>
-    <option>Doeun Lai</option>
-  </select>
-</div>
-
-<hr>
-
-<!-- Tabs -->
-<button onclick="showTab('prayer')">🙏 Prayer</button>
-<button onclick="showTab('notes')">📝 Notes</button>
-
-<!-- Prayer -->
-<div id="prayerTab">
-  <textarea id="prayerNote" placeholder="Prayer requests..."></textarea>
-</div>
-
-<!-- Notes -->
-<div id="notesTab" style="display:none">
-  <textarea id="meetingNote" placeholder="Meeting notes..."></textarea>
-</div>
-
-<script>
+/* Global */
 let activeDate = null;
 let unsubscribe = null;
 
-// Tabs
-function showTab(tab){
-  prayerTab.style.display = tab==="prayer" ? "block" : "none";
-  notesTab.style.display  = tab==="notes"  ? "block" : "none";
-}
+/* Load by date */
+function loadByDate(){
+  if(!meetingDate.value) return;
 
-// Load data by date
-function loadMeeting(date){
+  activeDate = meetingDate.value;
+
   if(unsubscribe) unsubscribe();
 
-  const ref = doc(db,"meetings",date);
+  const ref = doc(db,"meetings",activeDate);
 
   unsubscribe = onSnapshot(ref,(snap)=>{
     if(snap.exists()){
@@ -108,15 +49,15 @@ function loadMeeting(date){
       prayerNote.value = d.prayer || "";
       meetingNote.value = d.notes || "";
     }else{
-      meetingLeader.value = "";
-      prayerNote.value = "";
-      meetingNote.value = "";
+      meetingLeader.value="";
+      prayerNote.value="";
+      meetingNote.value="";
     }
   });
 }
 
-// Save (ONLY to selected date)
-async function saveMeeting(){
+/* Save */
+async function saveAll(){
   if(!activeDate) return;
 
   await setDoc(
@@ -132,16 +73,99 @@ async function saveMeeting(){
   );
 }
 
-// Events
-meetingDate.addEventListener("change", ()=>{
-  activeDate = meetingDate.value;
-  loadMeeting(activeDate);
+/* Events */
+window.addEventListener("DOMContentLoaded",()=>{
+  meetingDate.addEventListener("change", loadByDate);
+  meetingLeader.addEventListener("change", saveAll);
+  prayerNote.addEventListener("input", saveAll);
+  meetingNote.addEventListener("input", saveAll);
 });
 
-meetingLeader.addEventListener("change", saveMeeting);
-prayerNote.addEventListener("input", saveMeeting);
-meetingNote.addEventListener("input", saveMeeting);
-</script>
+/* UI */
+window.showTab = function(tab){
+  prayerTab.style.display = tab==="prayer"?"block":"none";
+  notesTab.style.display = tab==="notes"?"block":"none";
+};
 
+window.clearPrayer = function(){
+  if(!confirm("Clear prayer requests?")) return;
+  prayerNote.value="";
+  saveAll();
+};
+
+window.clearMeetingNote = function(){
+  if(!confirm("Clear meeting notes?")) return;
+  meetingNote.value="";
+  saveAll();
+};
+
+window.printMeeting = function(){
+  const html = `
+  <h2>Small Group Meeting</h2>
+  <p><b>Date:</b> ${meetingDate.value}</p>
+  <p><b>Leader:</b> ${meetingLeader.value}</p>
+  <hr>
+  <h3>🙏 Prayer</h3>
+  <p>${prayerNote.value.replace(/\n/g,"<br>")}</p>
+  <hr>
+  <h3>📝 Notes</h3>
+  <p>${meetingNote.value.replace(/\n/g,"<br>")}</p>
+  `;
+  const w = window.open("","", "width=900,height=700");
+  w.document.write(`<html><body>${html}</body></html>`);
+  w.print();
+};
+</script>
+</head>
+
+<body>
+
+<header style="background:#6a1b9a;color:#fff;padding:15px 30px;">
+<nav style="max-width:1000px;margin:auto;display:flex;justify-content:space-between;">
+<div style="font-weight:bold;">The 5 Brothers | Small Group 2026</div>
+<div>
+  <a href="index.html" style="color:#fff;text-decoration:none;margin:0 10px;">🏠 Home</a>
+  <a href="calendar.html" style="color:#fff;text-decoration:none;margin:0 10px;">📅 Calendar</a>
+  <a href="romans.html" style="color:#fff;text-decoration:none;margin:0 10px;">📖 Bible</a>
+  <a href="meeting.html" style="color:#fff;text-decoration:none;margin:0 10px;">🙏 Meeting Notes</a>
+  <a href="progress.html" style="color:#fff;text-decoration:none;margin:0 10px;">✅ Weekly Progress</a>
+</div>
+</nav>
+</header>
+
+<section style="max-width:900px;margin:40px auto;">
+<h2>🙏📝 Meeting Notes & Prayer Board</h2>
+
+<div style="margin-bottom:15px;">
+<label>Date:</label>
+<input type="date" id="meetingDate">
+<label style="margin-left:10px;">Leader:</label>
+<select id="meetingLeader">
+<option value="">Select leader</option>
+<option>Khoem Toeurn</option>
+<option>Vichhai Samrith</option>
+<option>Bonthoeurn Daniel</option>
+<option>David Pean</option>
+<option>Doeun Lai</option>
+</select>
+</div>
+
+<div>
+<button onclick="showTab('prayer')">🙏 Prayer</button>
+<button onclick="showTab('notes')">📝 Notes</button>
+<button onclick="printMeeting()">🖨 Print</button>
+</div>
+
+<div id="prayerTab">
+<textarea id="prayerNote" style="width:100%;min-height:400px;" placeholder="Prayer requests..."></textarea>
+<button onclick="clearPrayer()">Clear Prayer</button>
+</div>
+
+<div id="notesTab" style="display:none;">
+<textarea id="meetingNote" style="width:100%;min-height:400px;" placeholder="Meeting notes..."></textarea>
+<button onclick="clearMeetingNote()">Clear Notes</button>
+</div>
+
+</section>
 </body>
 </html>
