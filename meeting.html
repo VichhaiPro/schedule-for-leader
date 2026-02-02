@@ -7,6 +7,18 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebas
 import { getFirestore, doc, setDoc, getDoc, onSnapshot } 
 from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
 
+<script type="module">
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+const db = getFirestore();
+
+  
+
 const firebaseConfig = {
   apiKey: "AIzaSyCd-FGrbCelEUN370I0wmzscnLjYxxX200",
   authDomain: "bible-group-2026.firebaseapp.com",
@@ -194,6 +206,101 @@ function printMeeting(){
 loadPrayerByDate(date);
 
 </script>
+
+<!--Script load Prayer re and noted-->
+<script type="module">
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+const db = getFirestore();
+
+let unsubscribe = null;
+
+function getDocId(){
+  return meetingDate.value;
+}
+
+/* SAVE */
+async function saveAll(){
+  if(!meetingDate.value) return;
+
+  await setDoc(doc(db,"meetings",getDocId()),{
+    date: meetingDate.value,
+    leader: meetingLeader.value,
+    prayer: prayerNote.value,
+    notes: meetingNote.value,
+    updatedAt: new Date()
+  });
+}
+
+/* LOAD WHEN DATE CHANGE */
+function loadByDate(){
+  if(!meetingDate.value) return;
+
+  if(unsubscribe) unsubscribe(); // stop old listener
+
+  const ref = doc(db,"meetings",getDocId());
+
+  unsubscribe = onSnapshot(ref,(snap)=>{
+    if(snap.exists()){
+      const d = snap.data();
+      meetingLeader.value = d.leader || "";
+      prayerNote.value = d.prayer || "";
+      meetingNote.value = d.notes || "";
+    }else{
+      meetingLeader.value="";
+      prayerNote.value="";
+      meetingNote.value="";
+    }
+  });
+}
+
+/* EVENTS */
+meetingDate.addEventListener("change", loadByDate);
+meetingLeader.addEventListener("change", saveAll);
+prayerNote.addEventListener("input", saveAll);
+meetingNote.addEventListener("input", saveAll);
+
+/* UI HELPERS */
+function showTab(tab){
+  prayerTab.style.display = tab==="prayer"?"block":"none";
+  notesTab.style.display = tab==="notes"?"block":"none";
+}
+
+function clearPrayer(){
+  if(!confirm("Clear prayer requests?")) return;
+  prayerNote.value="";
+  saveAll();
+}
+
+function clearMeetingNote(){
+  if(!confirm("Clear meeting notes?")) return;
+  meetingNote.value="";
+  saveAll();
+}
+
+function printMeeting(){
+  const html = `
+  <h2>Small Group Meeting</h2>
+  <p><b>Date:</b> ${meetingDate.value}</p>
+  <p><b>Leader:</b> ${meetingLeader.value}</p>
+  <hr>
+  <h3>🙏 Prayer</h3>
+  <p>${prayerNote.value.replace(/\n/g,"<br>")}</p>
+  <hr>
+  <h3>📝 Notes</h3>
+  <p>${meetingNote.value.replace(/\n/g,"<br>")}</p>
+  `;
+  const w = window.open("","", "width=900,height=700");
+  w.document.write(`<html><body>${html}</body></html>`);
+  w.print();
+}
+</script>
+
 
 </body>
 </html>
