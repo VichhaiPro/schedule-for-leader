@@ -235,63 +235,23 @@ setInterval(showVerse, 8000); // ប្ដូរ រៀងរាល់ 8 វិ�
   </div>
 </div>
 
-
-<script type="module">
-import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc } 
-from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
-
-const db = getFirestore();
-
-const table = document.getElementById("memberTable");
-
-onSnapshot(collection(db,"members"), snap=>{
-  table.innerHTML="";
-  let i=1;
-  snap.forEach(d=>{
-    const m=d.data();
-    table.innerHTML+=`
-      <tr>
-        <td>${i++}</td>
-        <td>${m.name}</td>
-        <td>${m.role}</td>
-        <td>
-          <button onclick="deleteMember('${d.id}')">❌</button>
-        </td>
-      </tr>`;
-  });
-});
-
-window.saveMember = async()=>{
-  const name=memberName.value.trim();
-  if(!name) return alert("Enter name");
-  await addDoc(collection(db,"members"),{
-    name,
-    role:memberRole.value
-  });
-  closeModal();
-};
-
-window.deleteMember = async(id)=>{
-  if(confirm("Delete member?"))
-    await deleteDoc(doc(db,"members",id));
-};
-
-window.showAddMember=()=>memberModal.style.display="block";
-window.closeModal=()=>memberModal.style.display="none";
-</script>
-
-
+<!--test-->
 <script type="module">
 import {
   getFirestore, collection, addDoc, onSnapshot,
-  doc, updateDoc, getDoc
+  doc, updateDoc, deleteDoc, getDoc,
+  query, orderBy, getDocs
 } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
 
 const db = getFirestore();
-let currentMemberId = "";
 
-// Load members
-onSnapshot(collection(db,"members"), snap=>{
+let currentMemberId = "";
+let editMode = false;
+
+// 🔄 Load members ordered
+const q = query(collection(db,"members"), orderBy("order"));
+
+onSnapshot(q, snap=>{
   memberTable.innerHTML="";
   let i=1;
   snap.forEach(d=>{
@@ -301,36 +261,96 @@ onSnapshot(collection(db,"members"), snap=>{
         <td>${i++}</td>
         <td>${m.name}</td>
         <td>${m.role}</td>
-        <td><button onclick="openPrayer('${d.id}','${m.name}')">🙏 Open</button></td>
-        <td><button onclick="deleteMember('${d.id}')">❌</button></td>
+        <td>
+          <button onclick="openPrayer('${d.id}','${m.name}')">🙏</button>
+        </td>
+        <td>
+          <button onclick="editMember('${d.id}','${m.name}','${m.role}')">✏️</button>
+          <button onclick="deleteMember('${d.id}')">❌</button>
+        </td>
       </tr>`;
   });
 });
 
+// ➕ Add / ✏️ Update member
+window.saveMember = async()=>{
+  const name = memberName.value.trim();
+  if(!name) return alert("Enter name");
+
+  if(editMode){
+    await updateDoc(doc(db,"members",currentMemberId),{
+      name,
+      role: memberRole.value
+    });
+  }else{
+    // get max order
+    const snap = await getDocs(collection(db,"members"));
+    let maxOrder = 0;
+    snap.forEach(d=>{
+      maxOrder = Math.max(maxOrder, d.data().order || 0);
+    });
+
+    await addDoc(collection(db,"members"),{
+      name,
+      role: memberRole.value,
+      order: maxOrder + 1,
+      prayers: [],
+      createdAt: new Date()
+    });
+  }
+
+  closeModal();
+};
+
+// ✏️ Edit member
+window.editMember = (id,name,role)=>{
+  editMode = true;
+  currentMemberId = id;
+  memberName.value = name;
+  memberRole.value = role;
+  memberModal.style.display = "block";
+};
+
+// ❌ Delete member
+window.deleteMember = async(id)=>{
+  if(confirm("Delete member?")){
+    await deleteDoc(doc(db,"members",id));
+  }
+};
+
+// 🙏 Open prayer
 window.openPrayer = async(id,name)=>{
   currentMemberId=id;
   prayerTitle.innerText=`🙏 Prayer Requests – ${name}`;
-  const ref=doc(db,"members",id);
-  const snap=await getDoc(ref);
-  const p=snap.data().prayers || [];
-  [prayer1,prayer2,prayer3,prayer4,prayer5,prayer6,prayer7].forEach(
-    (t,i)=>t.value=p[i]||""
-  );
+  const snap = await getDoc(doc(db,"members",id));
+  const p = snap.data().prayers || [];
+  [prayer1,prayer2,prayer3,prayer4,prayer5,prayer6,prayer7]
+    .forEach((t,i)=>t.value=p[i]||"");
   prayerModal.style.display="block";
 };
 
+// 💾 Save prayer
 window.savePrayer = async()=>{
   const prayers=[
     prayer1.value,prayer2.value,prayer3.value,
     prayer4.value,prayer5.value,prayer6.value,prayer7.value
   ];
-    await updateDoc(doc(db,"members",currentMemberId),{prayers});
-    alert("Prayer saved online 🙏");
+  await updateDoc(doc(db,"members",currentMemberId),{prayers});
+  alert("Prayer saved online 🙏");
 };
-  
-window.closePrayer=()=>prayerModal.style.display="none";
 
+// UI helpers
+window.showAddMember=()=>{
+  editMode=false;
+  memberName.value="";
+  memberRole.value="Member";
+  memberModal.style.display="block";
+};
+
+window.closeModal=()=>memberModal.style.display="none";
+window.closePrayer=()=>prayerModal.style.display="none";
 </script>
+
 
 
 </body>
