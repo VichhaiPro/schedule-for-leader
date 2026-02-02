@@ -1,13 +1,20 @@
 <!DOCTYPE html>
 <html lang="km">
 <head>
+<meta charset="UTF-8">
+<title>Meeting Notes & Prayer Board</title>
+<link rel="stylesheet" href="css/style.css">
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc, onSnapshot } 
-from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
 
-
+/* 🔥 Firebase Config */
 const firebaseConfig = {
   apiKey: "AIzaSyCd-FGrbCelEUN370I0wmzscnLjYxxX200",
   authDomain: "bible-group-2026.firebaseapp.com",
@@ -17,102 +24,19 @@ const firebaseConfig = {
   appId: "1:639986298395:web:d9d92344e516c4f5e112be"
 };
 
+/* Init */
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Make global
-window.db = db;
-window.doc = doc;
-window.setDoc = setDoc;
-window.getDoc = getDoc;
-window.onSnapshot = onSnapshot;
-</script>
-
-    
-<meta charset="UTF-8">
-<title>Meeting Notes & Prayer Board</title>
-<link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-<?php include 'header.html'; ?>
-<header style="background:#6a1b9a;color:#fff;padding:15px 30px;border-radius:8px;">
-    <nav style="max-width:1000px;margin:auto;display:flex;justify-content:space-between;align-items:center;">
-      <div style="font-weight:bold;font-size:18px;">The 5 brothers |Small Group 2026|</div>
-      <div>
-        <a href="index.html" style="color:#fff;text-decoration:none;margin:0 10px;">🏠 Home</a>
-        <a href="calendar.html" style="color:#fff;text-decoration:none;margin:0 10px;">📅 Calendar</a>
-        <a href="romans.html" style="color:#fff;text-decoration:none;margin:0 10px;">📖 Bible</a>
-        <a href="meeting.html" style="color:#fff;text-decoration:none;margin:0 10px;">🙏 Meeting Notes</a>
-        <a href="progress.html" style="color:#fff;text-decoration:none;margin:0 10px;">✅ Weekly Progress</a>
-      </div>
-    </nav>
-  </header>
-  
-
-<section style="max-width:900px;margin:40px auto;">
-<h2>🙏📝 Meeting Notes & Prayer Board</h2>
-
-<!-- Date & Leader -->
-<div style="margin-bottom:15px;">
-  <label><strong>Date:</strong></label>
-  <input type="date" id="meetingDate" onchange="saveMeta()">
-  <label style="margin-left:15px;"><strong>Leader:</strong></label>
-  <select id="meetingLeader" onchange="saveMeta()">
-    <option value="">Select leader</option>
-    <option value="Khoem Toeurn">Khoem Toeurn</option>
-    <option value="Bonthoeurn Daniel">Bonthoeurn Daniel</option>
-    <option value="David Pean">David Pean</option>
-    <option value="Vichhai Samrith">Vichhai Samrith</option>
-    <option value="Doeun Lai">Doeun Lai</option>
-  </select>
-</div>
-
-<!-- Tabs -->
-<div style="margin-bottom:10px;">
-  <button onclick="showTab('prayer')">🙏 Prayer Requests</button>
-  <button onclick="showTab('notes')">📝 Meeting Notes</button>
-  <button onclick="printMeeting()">🖨️ Print / PDF</button>
-</div>
-
-<div id="prayerTab">
-<textarea id="prayerNote" placeholder="• Prayer request\n• Family\n• Health\n• Ministry..." style="width:100%; min-height:1000px; padding:2px;" oninput="savePrayer()"></textarea>
-<button onclick="clearPrayer()" style="margin-top:8px;">🗑️ Clear Prayer</button>
-</div>
-
-<div id="notesTab" style="display:none;">
-<textarea id="meetingNote" placeholder="• Key sharing point\n• Teaching highlight\n• Action steps..." style="width:100%; min-height:1000px; padding:2px;" oninput="saveMeetingNote()"></textarea>
-<button onclick="clearMeetingNote()" style="margin-top:8px;">🗑️ Clear Notes</button>
-</div>
-
-</section>
-
-<script>
-
-function clearPrayer(){if(!confirm("Clear prayer requests?")) return; prayerNote.value=""; localStorage.removeItem("prayerNote");}
-function clearMeetingNote(){if(!confirm("Clear meeting notes?")) return; meetingNote.value=""; localStorage.removeItem("meetingNote");}
-function showTab(tab){
-  prayerTab.style.display = tab==="prayer"?"block":"none";
-  notesTab.style.display = tab==="notes"?"block":"none";
-}
-function printMeeting(){
-  const content = `<h2>Small Group Meeting Notes</h2><p><strong>Date:</strong> ${meetingDate.value}</p><p><strong>Leader:</strong> ${meetingLeader.value}</p><hr><h3>🙏 Prayer Requests</h3><p>${prayerNote.value.replace(/\n/g,"<br>")}</p><hr><h3>📝 Meeting Notes</h3><p>${meetingNote.value.replace(/\n/g,"<br>")}</p>`;
-  const win = window.open("","", "width=900,height=700");
-  win.document.write(`<html><head><title>Meeting Notes</title><style>body{font-family:Arial;padding:20px;}</style></head><body>${content}</body></html>`);
-  win.document.close(); win.print();
-}
-window.onload = loadAll;
-</script>
-
-<script>
+/* Global */
 let activeDate = null;
 let unsubscribe = null;
 
-let currentDoc = null;
-
+/* Load by date */
 function loadByDate(){
   if(!meetingDate.value) return;
 
-  activeDate = meetingDate.value; // 🔒 lock date
+  activeDate = meetingDate.value;
 
   if(unsubscribe) unsubscribe();
 
@@ -132,12 +56,9 @@ function loadByDate(){
   });
 }
 
-function getDocId(){
-  return meetingDate.value || "latest";
-}
-
+/* Save */
 async function saveAll(){
-  if(!activeDate) return; // ❌ no auto save to new date
+  if(!activeDate) return;
 
   await setDoc(
     doc(db,"meetings",activeDate),
@@ -148,80 +69,103 @@ async function saveAll(){
       notes: meetingNote.value,
       updatedAt: new Date()
     },
-    { merge:true } // ✅ only update fields
+    { merge:true }
   );
 }
 
-
-function listenData(){
-  if(!meetingDate.value) return;
-
-  currentDoc = getDocId();
-
-  onSnapshot(doc(db, "meetings", currentDoc), (snap)=>{
-    if(snap.exists()){
-      const d = snap.data();
-      meetingLeader.value = d.leader || "";
-      prayerNote.value = d.prayer || "";
-      meetingNote.value = d.notes || "";
-    }
-  });
-}
-
-meetingDate.addEventListener("change", ()=>{
-  saveAll();
-  listenData();
+/* Events */
+window.addEventListener("DOMContentLoaded",()=>{
+  meetingDate.addEventListener("change", loadByDate);
+  meetingLeader.addEventListener("change", saveAll);
+  prayerNote.addEventListener("input", saveAll);
+  meetingNote.addEventListener("input", saveAll);
 });
-meetingDate.addEventListener("change", loadByDate);
-meetingLeader.addEventListener("change", saveAll);
-prayerNote.addEventListener("input", saveAll);
-meetingNote.addEventListener("input", saveAll);
 
+/* UI */
+window.showTab = function(tab){
+  prayerTab.style.display = tab==="prayer"?"block":"none";
+  notesTab.style.display = tab==="notes"?"block":"none";
+};
 
-function clearPrayer(){
+window.clearPrayer = function(){
   if(!confirm("Clear prayer requests?")) return;
   prayerNote.value="";
   saveAll();
-}
-function clearMeetingNote(){
+};
+
+window.clearMeetingNote = function(){
   if(!confirm("Clear meeting notes?")) return;
   meetingNote.value="";
   saveAll();
-}
+};
 
-function showTab(tab){
-  prayerTab.style.display = tab==="prayer"?"block":"none";
-  notesTab.style.display = tab==="notes"?"block":"none";
-}
-
-function printMeeting(){
-  const content = `
-  <h2>Small Group Meeting Notes</h2>
-  <p><strong>Date:</strong> ${meetingDate.value}</p>
-  <p><strong>Leader:</strong> ${meetingLeader.value}</p>
+window.printMeeting = function(){
+  const html = `
+  <h2>Small Group Meeting</h2>
+  <p><b>Date:</b> ${meetingDate.value}</p>
+  <p><b>Leader:</b> ${meetingLeader.value}</p>
   <hr>
-  <h3>🙏 Prayer Requests</h3>
+  <h3>🙏 Prayer</h3>
   <p>${prayerNote.value.replace(/\n/g,"<br>")}</p>
   <hr>
-  <h3>📝 Meeting Notes</h3>
+  <h3>📝 Notes</h3>
   <p>${meetingNote.value.replace(/\n/g,"<br>")}</p>
   `;
-  const win = window.open("","", "width=900,height=700");
-  win.document.write(`<html><head><title>Meeting Notes</title></head><body>${content}</body></html>`);
-  win.print();
-}
-
-  const date = new URLSearchParams(window.location.search).get("date");
-loadPrayerByDate(date);
-
-
-
-
-
+  const w = window.open("","", "width=900,height=700");
+  w.document.write(`<html><body>${html}</body></html>`);
+  w.print();
+};
 </script>
+</head>
 
+<body>
 
+<header style="background:#6a1b9a;color:#fff;padding:15px 30px;">
+<nav style="max-width:1000px;margin:auto;display:flex;justify-content:space-between;">
+<div style="font-weight:bold;">The 5 Brothers | Small Group 2026</div>
+<div>
+<a href="index.html">Home</a>
+<a href="calendar.html">Calendar</a>
+<a href="romans.html">Bible</a>
+<a href="meeting.html">Meeting</a>
+<a href="progress.html">Progress</a>
+</div>
+</nav>
+</header>
 
+<section style="max-width:900px;margin:40px auto;">
+<h2>🙏📝 Meeting Notes & Prayer Board</h2>
 
+<div style="margin-bottom:15px;">
+<label>Date:</label>
+<input type="date" id="meetingDate">
+<label style="margin-left:10px;">Leader:</label>
+<select id="meetingLeader">
+<option value="">Select leader</option>
+<option>Khoem Toeurn</option>
+<option>Vichhai Samrith</option>
+<option>Bonthoeurn Daniel</option>
+<option>David Pean</option>
+<option>Doeun Lai</option>
+</select>
+</div>
+
+<div>
+<button onclick="showTab('prayer')">🙏 Prayer</button>
+<button onclick="showTab('notes')">📝 Notes</button>
+<button onclick="printMeeting()">🖨 Print</button>
+</div>
+
+<div id="prayerTab">
+<textarea id="prayerNote" style="width:100%;min-height:400px;" placeholder="Prayer requests..."></textarea>
+<button onclick="clearPrayer()">Clear Prayer</button>
+</div>
+
+<div id="notesTab" style="display:none;">
+<textarea id="meetingNote" style="width:100%;min-height:400px;" placeholder="Meeting notes..."></textarea>
+<button onclick="clearMeetingNote()">Clear Notes</button>
+</div>
+
+</section>
 </body>
 </html>
