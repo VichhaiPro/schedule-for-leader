@@ -172,9 +172,11 @@ meetingDate.addEventListener("change", ()=>{
   saveAll();
   listenData();
 });
+meetingDate.addEventListener("change", loadByDate);
 meetingLeader.addEventListener("change", saveAll);
 prayerNote.addEventListener("input", saveAll);
 meetingNote.addEventListener("input", saveAll);
+
 
 function clearPrayer(){
   if(!confirm("Clear prayer requests?")) return;
