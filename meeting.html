@@ -104,25 +104,54 @@ window.onload = loadAll;
 </script>
 
 <script>
+let activeDate = null;
+let unsubscribe = null;
+
 let currentDoc = null;
+
+function loadByDate(){
+  if(!meetingDate.value) return;
+
+  activeDate = meetingDate.value; // 🔒 lock date
+
+  if(unsubscribe) unsubscribe();
+
+  const ref = doc(db,"meetings",activeDate);
+
+  unsubscribe = onSnapshot(ref,(snap)=>{
+    if(snap.exists()){
+      const d = snap.data();
+      meetingLeader.value = d.leader || "";
+      prayerNote.value = d.prayer || "";
+      meetingNote.value = d.notes || "";
+    }else{
+      meetingLeader.value="";
+      prayerNote.value="";
+      meetingNote.value="";
+    }
+  });
+}
 
 function getDocId(){
   return meetingDate.value || "latest";
 }
 
 async function saveAll(){
-  if(!meetingDate.value) return;
+  if(!activeDate) return; // ❌ no auto save to new date
 
-  currentDoc = getDocId();
-
-  await setDoc(doc(db, "meetings", currentDoc), {
-    date: meetingDate.value,
-    leader: meetingLeader.value,
-    prayer: prayerNote.value,
-    notes: meetingNote.value,
-    updatedAt: new Date()
-  });
+  await setDoc(
+    doc(db,"meetings",activeDate),
+    {
+      date: activeDate,
+      leader: meetingLeader.value,
+      prayer: prayerNote.value,
+      notes: meetingNote.value,
+      updatedAt: new Date()
+    },
+    { merge:true } // ✅ only update fields
+  );
 }
+
 
 function listenData(){
   if(!meetingDate.value) return;
