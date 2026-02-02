@@ -87,18 +87,7 @@ window.onSnapshot = onSnapshot;
 </section>
 
 <script>
-function saveMeta(){
-  localStorage.setItem("meetingDate", meetingDate.value);
-  localStorage.setItem("meetingLeader", meetingLeader.value);
-}
-function savePrayer(){localStorage.setItem("prayerNote", prayerNote.value);}
-function saveMeetingNote(){localStorage.setItem("meetingNote", meetingNote.value);}
-function loadAll(){
-  meetingDate.value = localStorage.getItem("meetingDate") || "";
-  meetingLeader.value = localStorage.getItem("meetingLeader") || "";
-  prayerNote.value = localStorage.getItem("prayerNote") || "";
-  meetingNote.value = localStorage.getItem("meetingNote") || "";
-}
+
 function clearPrayer(){if(!confirm("Clear prayer requests?")) return; prayerNote.value=""; localStorage.removeItem("prayerNote");}
 function clearMeetingNote(){if(!confirm("Clear meeting notes?")) return; meetingNote.value=""; localStorage.removeItem("meetingNote");}
 function showTab(tab){
