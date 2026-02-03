@@ -41,21 +41,7 @@ function loadByDate(){
   if(unsubscribe) unsubscribe();
 
   const ref = doc(db,"meetings",activeDate);
-//new test
 
-import { getAuth, signInAnonymously } 
-from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
-
-const auth = getAuth();
-
-signInAnonymously(auth)
-  .then(() => {
-    console.log("✅ Authenticated anonymously");
-  })
-  .catch(err => {
-    console.error("Auth error", err);
-  });
-//new test
 
   unsubscribe = onSnapshot(ref,(snap)=>{
     if(snap.exists()){
