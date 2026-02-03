@@ -14,14 +14,39 @@
       <div style="font-weight:bold;font-size:18px;">The 5 brothers |Small Group 2026|</div>
       <div>
         <a href="index.html" style="color:#fff;text-decoration:none;margin:0 10px;">🏠 Home</a>
-        <a href="calendar.html" style="color:#fff;text-decoration:none;margin:0 10px;">📅 Calendar</a>
+        <a href="calendar.html" style="color:#fff;text-decoration:none;margin:0 10px;">Ice breaker 5minutes</a>
         <a href="romans.html" style="color:#fff;text-decoration:none;margin:0 10px;">📖 Bible</a>
         <a href="meeting.html" style="color:#fff;text-decoration:none;margin:0 10px;">🙏 Meeting Notes</a>
         <a href="progress.html" style="color:#fff;text-decoration:none;margin:0 10px;">✅ Weekly Progress</a>
       </div>
     </nav>
   </header>
-  
+
+
+ <section style="max-width:900px;margin:40px auto;">
+  <h2>🧊 Ice Breaker (5 Minutes)</h2>
+  <p style="color:#666;">Let’s warm up before Bible sharing</p>
+
+  <div id="iceCard" style="
+    background:#f8f5fc;
+    padding:20px;
+    border-radius:12px;
+    margin-top:15px;
+    min-height:120px;
+  ">
+    <h3 id="iceTitle">Click Start</h3>
+    <p id="iceQuestion" style="font-size:18px;"></p>
+  </div>
+
+  <button onclick="nextIceBreaker()" style="margin-top:15px;">
+    🎲 Start / Next Question
+  </button>
+
+  <p style="margin-top:10px;color:#888;font-size:14px;">
+    ⏱ Each person shares quickly (30–60 seconds)
+  </p>
+</section>
+ 
 
 
 <section id="calendar" style="max-width:1000px;margin:40px auto;padding:30px;font-family:'Khmer OS Siemreap','Segoe UI',Arial,sans-serif;background:#faf7ff;border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,0.06);">
@@ -76,5 +101,46 @@
 ⛔ Week 4 នៃខែ និង Khmer New Year → មិនមានការជួប
 </p>
 </section>
+
+
+<script>
+const iceBreakers = [
+  {
+    title: "🙋‍♂️ Simple Question",
+    q: "What is one good thing God did for you this week?"
+  },
+  {
+    title: "😊 Fun Question",
+    q: "If Jesus came to your house today, what food would you serve Him?"
+  },
+  {
+    title: "📖 Bible Reflection",
+    q: "Which verse from Romans touched your heart recently?"
+  },
+  {
+    title: "⚡ Quick Choice",
+    q: "Coffee ☕ or Tea 🍵 ? Why?"
+  },
+  {
+    title: "🙏 Spiritual Check",
+    q: "What is one thing you want prayer for today?"
+  },
+  {
+    title: "💬 One Word",
+    q: "Describe your week with ONE word."
+  },
+  {
+    title: "🎯 Life Question",
+    q: "What helps you stay close to God when you are busy?"
+  }
+];
+
+function nextIceBreaker(){
+  const i = Math.floor(Math.random() * iceBreakers.length);
+  iceTitle.innerText = iceBreakers[i].title;
+  iceQuestion.innerText = iceBreakers[i].q;
+}
+</script>
+
 </body>
 </html>
