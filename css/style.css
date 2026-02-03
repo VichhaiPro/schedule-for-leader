@@ -105,3 +105,196 @@ body { font-family:'Segoe UI', Arial, sans-serif; margin:0; padding:0; backgroun
 }
 
 
+/* ===== Base ===== */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  background: #f6f7fb;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* ===== Header ===== */
+header {
+  background: linear-gradient(135deg, #6a1b9a, #8e24aa);
+  color: #fff;
+  border-radius: 0 0 16px 16px;
+}
+
+nav a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+/* ===== Section Card ===== */
+section {
+  background: #fff;
+  border-radius: 14px;
+  padding: 28px;
+  box-shadow: 0 10px 25px rgba(0,0,0,.08);
+}
+
+/* ===== Headings ===== */
+h1, h2, h3 {
+  margin-top: 0;
+  color: #4a148c;
+}
+
+h2 {
+  margin-bottom: 20px;
+}
+
+/* ===== Buttons ===== */
+button {
+  background: #6a1b9a;
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all .2s ease;
+}
+
+button:hover {
+  background: #8e24aa;
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: scale(.97);
+}
+
+/* ===== Inputs ===== */
+input, select, textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  margin-top: 6px;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #8e24aa;
+  box-shadow: 0 0 0 2px rgba(142,36,170,.15);
+}
+
+/* ===== Tabs ===== */
+.tab-buttons button {
+  margin-right: 8px;
+  background: #ede7f6;
+  color: #4a148c;
+}
+
+.tab-buttons button.active {
+  background: #6a1b9a;
+  color: #fff;
+}
+
+/* ===== Tables ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th {
+  background: #6a1b9a;
+  color: #fff;
+  text-align: left;
+  padding: 12px;
+  font-size: 14px;
+}
+
+td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+
+tr:hover {
+  background: #faf3ff;
+}
+
+/* ===== Prayer & Notes ===== */
+textarea {
+  min-height: 180px;
+  resize: vertical;
+}
+
+/* ===== Modal ===== */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 22px;
+  border-radius: 14px;
+  width: 100%;
+  max-width: 480px;
+  animation: scaleIn .2s ease;
+}
+
+@keyframes scaleIn {
+  from { transform: scale(.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* ===== Member Card (optional) ===== */
+.member-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #f8f5fc;
+  margin-bottom: 8px;
+}
+
+/* ===== Footer ===== */
+footer {
+  text-align: center;
+  padding: 20px;
+  color: #777;
+  font-size: 13px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  nav {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  section {
+    margin: 20px 12px;
+    padding: 20px;
+  }
+
+  th, td {
+    font-size: 13px;
+  }
+}
+
+
+
