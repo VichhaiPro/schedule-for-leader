@@ -248,61 +248,7 @@ const db = getFirestore();
 let currentMemberId = "";
 let editMode = false;
 
-//New-rules-->
-  
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
 
-    // 🔹 Members list (team + prayer requests)
-    match /members/{memberId} {
-      // Everyone can read (group transparency)
-      allow read: if true;
-
-      // Only authenticated users can write
-      allow create, update, delete: if request.auth != null
-        && request.resource.data.keys().hasOnly([
-          'name',
-          'role',
-          'prayers',
-          'createdAt',
-          'updatedAt'
-        ]);
-    }
-
-    // 🔹 Meeting notes & prayer board (per date)
-    match /meetings/{dateId} {
-      allow read: if true;
-
-      allow create, update: if request.auth != null
-        && request.resource.data.keys().hasOnly([
-          'date',
-          'leader',
-          'prayer',
-          'notes',
-          'updatedAt'
-        ]);
-
-      allow delete: if false; // ❌ prevent history deletion
-    }
-  }
-}
-
-<script type="module">
-import { getAuth, signInAnonymously } 
-from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
-
-const auth = getAuth();
-
-signInAnonymously(auth)
-  .then(() => {
-    console.log("✅ Authenticated anonymously");
-  })
-  .catch(err => {
-    console.error("Auth error", err);
-  });
-
-//End New rules-->
 
 
 // 🔄 Load members ordered
