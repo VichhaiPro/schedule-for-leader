@@ -24,28 +24,37 @@
 
 
  <section style="max-width:900px;margin:40px auto;">
-  <h2>🧊 Ice Breaker (5 Minutes)</h2>
-  <p style="color:#666;">Let’s warm up before Bible sharing</p>
+  <h2>🧊 Ice Breaker (៥ នាទី)</h2>
+  <p style="color:#666;">បើកចិត្ត បើកការចែករំលែក មុនចូលសិក្សាព្រះគម្ពីរ</p>
 
-  <div id="iceCard" style="
+  <div style="
     background:#f8f5fc;
-    padding:20px;
-    border-radius:12px;
+    padding:22px;
+    border-radius:14px;
     margin-top:15px;
-    min-height:120px;
+    box-shadow:0 6px 16px rgba(0,0,0,.08);
   ">
-    <h3 id="iceTitle">Click Start</h3>
-    <p id="iceQuestion" style="font-size:18px;"></p>
+    <h3 id="iceTitle">ចុច Start</h3>
+    <p id="iceQuestion" style="font-size:18px;line-height:1.6;"></p>
+
+    <div style="margin-top:15px;">
+      ⏱ ពេលវេលា​នៅសល់៖ 
+      <strong id="timer">05:00</strong>
+    </div>
   </div>
 
+  <button onclick="startIceBreaker()" style="margin-top:15px;">
+    🎲 Start Ice Breaker
+  </button>
   <button onclick="nextIceBreaker()" style="margin-top:15px;">
-    🎲 Start / Next Question
+    🔄 Next Question
   </button>
 
   <p style="margin-top:10px;color:#888;font-size:14px;">
-    ⏱ Each person shares quickly (30–60 seconds)
+    👉 ម្នាក់ៗចែករំលែក ៣០–៦០ វិនាទី
   </p>
 </section>
+
  
 
 
@@ -106,41 +115,71 @@
 <script>
 const iceBreakers = [
   {
-    title: "🙋‍♂️ Simple Question",
-    q: "What is one good thing God did for you this week?"
+    title: "😊 សំណួរងាយៗ",
+    q: "សប្តាហ៍នេះ ព្រះបានប្រទានអ្វីល្អមួយដល់អ្នក?"
   },
   {
-    title: "😊 Fun Question",
-    q: "If Jesus came to your house today, what food would you serve Him?"
+    title: "🙏 សំណួរផ្លូវវិញ្ញាណ",
+    q: "មានអ្វីមួយដែលអ្នកចង់អធិស្ឋានសុំជំនួយថ្ងៃនេះ?"
   },
   {
-    title: "📖 Bible Reflection",
-    q: "Which verse from Romans touched your heart recently?"
+    title: "📖 ព្រះគម្ពីរ",
+    q: "មានខគម្ពីរណាមួយក្នុងសៀវភៅរ៉ូម ដែលប៉ះពាល់ចិត្តអ្នក?"
   },
   {
-    title: "⚡ Quick Choice",
-    q: "Coffee ☕ or Tea 🍵 ? Why?"
+    title: "💬 មួយពាក្យ",
+    q: "ពិពណ៌នាសប្តាហ៍របស់អ្នក ដោយមួយពាក្យ"
   },
   {
-    title: "🙏 Spiritual Check",
-    q: "What is one thing you want prayer for today?"
+    title: "⚡ ជ្រើសរើសលឿន",
+    q: "អានព្រះគម្ពីរព្រឹក 🌅 ឬ ល្ងាច 🌙? ហេតុអ្វី?"
   },
   {
-    title: "💬 One Word",
-    q: "Describe your week with ONE word."
+    title: "❤️ ជំនឿ",
+    q: "អ្វីជួយអ្នកឲ្យនៅជិតព្រះ នៅពេលរវល់?"
   },
   {
-    title: "🎯 Life Question",
-    q: "What helps you stay close to God when you are busy?"
+    title: "🎯 ជីវិត",
+    q: "ឆ្នាំនេះ អ្នកចង់ឃើញព្រះធ្វើអ្វីក្នុងជីវិតអ្នក?"
   }
 ];
+
+let timerInterval;
+let totalSeconds = 300;
+
+function startIceBreaker(){
+  nextIceBreaker();
+  startTimer();
+}
 
 function nextIceBreaker(){
   const i = Math.floor(Math.random() * iceBreakers.length);
   iceTitle.innerText = iceBreakers[i].title;
   iceQuestion.innerText = iceBreakers[i].q;
 }
+
+function startTimer(){
+  clearInterval(timerInterval);
+  totalSeconds = 300;
+  updateTimer();
+
+  timerInterval = setInterval(()=>{
+    totalSeconds--;
+    updateTimer();
+    if(totalSeconds <= 0){
+      clearInterval(timerInterval);
+      alert("⏰ ៥ នាទីបានបញ្ចប់! ត្រៀមចូល Worship 🙏");
+    }
+  },1000);
+}
+
+function updateTimer(){
+  const min = String(Math.floor(totalSeconds/60)).padStart(2,"0");
+  const sec = String(totalSeconds%60).padStart(2,"0");
+  timer.innerText = `${min}:${sec}`;
+}
 </script>
+
 
 </body>
 </html>
