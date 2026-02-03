@@ -247,7 +247,21 @@ const db = getFirestore();
 
 let currentMemberId = "";
 let editMode = false;
+//new test
+<script type="module">
+import { getAuth, signInAnonymously } 
+from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
+const auth = getAuth();
+
+signInAnonymously(auth)
+  .then(() => {
+    console.log("✅ Authenticated anonymously");
+  })
+  .catch(err => {
+    console.error("Auth error", err);
+  });
+//new test
 
 
 
