@@ -23,22 +23,7 @@
   const app = initializeApp(firebaseConfig);
 </script>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
-import { getAuth, signInAnonymously } from 
-"https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
-
-let isAdmin = false;
-
-signInAnonymously(auth).then(()=>{
-  console.log("Logged in anonymous");
-});
-</script>
   
 <meta charset="UTF-8">
 <title>Sonoko Bible group Website Home page</title>
