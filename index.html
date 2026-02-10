@@ -354,11 +354,11 @@ window.editMember = (id,name,role)=>{
 };
 
 // ❌ Delete member
-window.deleteMember = async(id)=>{
-  if(confirm("Delete member?")){
-    await deleteDoc(doc(db,"members",id));
-  }
-};
+//window.deleteMember = async(id)=>{
+ // if(confirm("Delete member?")){
+  //  await deleteDoc(doc(db,"members",id));
+//  }
+//};
 
 // 🙏 Open prayer
 window.openPrayer = async(id,name)=>{
