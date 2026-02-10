@@ -20,7 +20,7 @@ body {
     text-align: center;
   }
   
-  th { background: #2E5D9F; color: #fff; }
+  th { background: #2E5D9F; text-align:center;color: #fff; }
   
   .note {
     margin-top: 20px;
